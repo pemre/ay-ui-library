@@ -1,0 +1,42 @@
+{
+  "about": {
+    "homepage": "https://www.ladle.dev",
+    "github": "https://github.com/tajo/ladle",
+    "version": 1
+  },
+  "stories": {
+    "example--democomponent--default": {
+      "name": "Default",
+      "levels": [
+        "Example",
+        "Democomponent"
+      ],
+      "locStart": 10,
+      "locEnd": 10,
+      "filePath": "src/components/DemoComponent/DemoComponent.stories.tsx",
+      "meta": {}
+    },
+    "example--democomponent--with-initial-count": {
+      "name": "With initial count",
+      "levels": [
+        "Example",
+        "Democomponent"
+      ],
+      "locStart": 12,
+      "locEnd": 12,
+      "filePath": "src/components/DemoComponent/DemoComponent.stories.tsx",
+      "meta": {}
+    },
+    "display--imagezoom--default": {
+      "name": "Default",
+      "levels": [
+        "Display",
+        "Imagezoom"
+      ],
+      "locStart": 10,
+      "locEnd": 10,
+      "filePath": "src/components/ImageZoom/ImageZoom.stories.tsx",
+      "meta": {}
+    }
+  }
+}
