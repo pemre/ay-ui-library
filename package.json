@@ -1,0 +1,58 @@
+{
+    "name": "ay-ui-library",
+    "version": "0.1.0",
+    "description": "🌜 Ay UI Library — Reusable D3-powered visualization components for React",
+    "type": "module",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.es.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "storybook dev -p 6006",
+        "build": "vite build",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "biome check src",
+        "lint:fix": "biome check --fix src",
+        "format": "biome format --write src",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
+    },
+    "peerDependencies": {
+        "d3": "^7.0.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.4.6",
+        "@storybook/addon-essentials": "^8.6.14",
+        "@storybook/blocks": "^8.6.14",
+        "@storybook/react-vite": "^8.6.18",
+        "@storybook/test": "^8.6.18",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@types/d3": "^7.4.3",
+        "@types/jsdom": "^28.0.0",
+        "@types/react": "^18.3.28",
+        "@types/react-dom": "^18.3.7",
+        "@vitejs/plugin-react": "^4.7.0",
+        "d3": "^7.9.0",
+        "fast-check": "^4.6.0",
+        "jsdom": "^28.1.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "storybook": "^8.6.18",
+        "typescript": "^5.9.3",
+        "vite": "^5.4.21",
+        "vite-plugin-dts": "^4.5.4",
+        "vitest": "^1.6.1"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pemre/ay-ui-library.git"
+    }
+}
