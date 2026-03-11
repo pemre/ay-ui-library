@@ -92,52 +92,11 @@ const sampleData: DataNode[] = [
   },
 ];
 
-const shapeShowcaseData: DataNode[] = [
-  {
-    date: new Date("2024-02-15"),
-    type: "circle-type",
-    title: "Circle Node",
-    content: "Rendered as a circle.",
-  },
-  {
-    date: new Date("2024-04-15"),
-    type: "square-type",
-    title: "Square Node",
-    content: "Rendered as a square.",
-  },
-  {
-    date: new Date("2024-06-15"),
-    type: "triangle-type",
-    title: "Triangle Node",
-    content: "Rendered as a triangle.",
-  },
-  {
-    date: new Date("2024-08-15"),
-    type: "star-type",
-    title: "Star Node",
-    content: "Rendered as a star.",
-  },
-  {
-    date: new Date("2024-10-15"),
-    type: "pentagon-type",
-    title: "Pentagon Node",
-    content: "Rendered as a pentagon.",
-  },
-];
-
 const defaultTypes = [
   { key: "history", color: "#3b82f6", shape: "circle" as const },
   { key: "cinema", color: "#f59e0b", shape: "star" as const },
   { key: "literature", color: "#10b981", shape: "square" as const },
   { key: "science", color: "#8b5cf6", shape: "triangle" as const },
-];
-
-const shapeTypes = [
-  { key: "circle-type", color: "#3b82f6", shape: "circle" as const },
-  { key: "square-type", color: "#10b981", shape: "square" as const },
-  { key: "triangle-type", color: "#f59e0b", shape: "triangle" as const },
-  { key: "star-type", color: "#ef4444", shape: "star" as const },
-  { key: "pentagon-type", color: "#8b5cf6", shape: "pentagon" as const },
 ];
 
 function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
@@ -345,17 +304,7 @@ type Story = StoryObj;
 /** Default story with sample data and all controls exposed. */
 export const Default: Story = {
   args: {
-    locale: "tr",
     yearsToShow: 3,
-  },
-};
-
-/** Each of the five data-node shapes rendered with labeled types. */
-export const AllShapes: Story = {
-  args: {
-    data: shapeShowcaseData,
-    types: shapeTypes,
-    yearsToShow: 2,
   },
 };
 
@@ -399,20 +348,6 @@ export const MediumContainer: Story = {
   args: { yearsToShow: 4 },
 };
 
-/** Responsive: narrow container below 300px hides zoom controls. */
-export const NarrowContainer: Story = {
-  decorators: [
-    (Story) => (
-      <div
-        style={{ width: "280px", height: "400px", border: "1px dashed var(--spiral-border, #ccc)" }}
-      >
-        <Story />
-      </div>
-    ),
-  ],
-  args: { yearsToShow: 3 },
-};
-
 /** Empty data array — demonstrates empty-state rendering. */
 export const EmptyData: Story = {
   args: {
@@ -454,26 +389,10 @@ export const NoAnimations: Story = {
   },
 };
 
-/** Year labels positioned at bottom-right. */
-export const BottomRightLabels: Story = {
-  args: {
-    yearLabelPosition: "bottom-right",
-    yearsToShow: 4,
-  },
-};
-
 /** Turkish locale for month labels and date formatting. */
 export const TurkishLocale: Story = {
   args: {
     locale: "tr",
-    yearsToShow: 4,
-  },
-};
-
-/** Chinese locale for month labels and date formatting. */
-export const ChineseLocale: Story = {
-  args: {
-    locale: "zh",
     yearsToShow: 4,
   },
 };
