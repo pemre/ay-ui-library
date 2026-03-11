@@ -352,13 +352,13 @@ export function SpiralTimeline({
 
     const spiralPointAtPrev = hasPrevGeom
       ? (absYear: number) =>
-          spiralPointWith(
-            absYear,
-            prevGeom.oldestYear,
-            prevGeom.radiusIncrement,
-            prevGeom.yearRange,
-            prevGeom.newestYear,
-          )
+        spiralPointWith(
+          absYear,
+          prevGeom.oldestYear,
+          prevGeom.radiusIncrement,
+          prevGeom.yearRange,
+          prevGeom.newestYear,
+        )
       : spiralPointAtCurrent;
 
     // ── SPIRAL PATH SEGMENTS (data-joined) ──
@@ -662,17 +662,17 @@ export function SpiralTimeline({
 
     const dateToSpiralPrev = hasPrevGeom
       ? (date: Date) => {
-          const yDiff = date.getFullYear() - prevGeom.oldestYear;
-          const doy = getDayOfYear(date);
-          const rot = yDiff + doy / 365;
-          const a = -Math.PI / 2 - rot * 2 * Math.PI;
-          const r = rot * prevGeom.radiusIncrement;
-          return { x: Math.cos(a) * r, y: Math.sin(a) * r };
-        }
+        const yDiff = date.getFullYear() - prevGeom.oldestYear;
+        const doy = getDayOfYear(date);
+        const rot = yDiff + doy / 365;
+        const a = -Math.PI / 2 - rot * 2 * Math.PI;
+        const r = rot * prevGeom.radiusIncrement;
+        return { x: Math.cos(a) * r, y: Math.sin(a) * r };
+      }
       : (date: Date) => {
-          const sp = dateToSpiral(date, oldestYear, radiusIncrement);
-          return { x: sp.x, y: sp.y };
-        };
+        const sp = dateToSpiral(date, oldestYear, radiusIncrement);
+        return { x: sp.x, y: sp.y };
+      };
 
     interface VisibleNode extends DataNode {
       nodeId: string;
@@ -844,6 +844,7 @@ export function SpiralTimeline({
     const container = svg.parentElement;
     if (!container) return;
 
+    let prevWidth = 0;
     let timeout: ReturnType<typeof setTimeout>;
     const observer = new ResizeObserver((entries) => {
       clearTimeout(timeout);
@@ -851,16 +852,17 @@ export function SpiralTimeline({
         const entry = entries[0];
         if (!entry) return;
         const { width } = entry.contentRect;
-        setContainerWidth(width);
-        // Re-init layers on resize
+        // Skip if width hasn't actually changed — avoids wiping a valid render
+        if (width === prevWidth) return;
+        prevWidth = width;
         initLayers();
-        // Force re-render by toggling a state dependency
-        // The main effect will re-run because layersRef.current.initialized is reset
+        setContainerWidth(width);
       }, RESIZE_DEBOUNCE_MS);
     });
 
     observer.observe(container);
     // Initial size
+    prevWidth = container.clientWidth;
     setContainerWidth(container.clientWidth);
     initLayers();
 
