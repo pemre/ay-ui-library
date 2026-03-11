@@ -1,7 +1,7 @@
 {
     "name": "ay-ui-library",
-    "version": "0.2.0",
-    "description": "🌜 Ay UI Library — Reusable D3-powered visualization components for React",
+    "version": "0.3.0",
+    "description": "🌜 Ay UI Library — Reusable visualization and interactive components for React",
     "type": "module",
     "main": "dist/index.cjs.js",
     "module": "dist/index.es.js",
@@ -24,7 +24,8 @@
     "peerDependencies": {
         "d3": "^7.0.0",
         "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react-dom": "^18.0.0",
+        "tailwindcss": "^4.2.1"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.4.6",
@@ -32,6 +33,7 @@
         "@storybook/blocks": "^8.6.14",
         "@storybook/react-vite": "^8.6.18",
         "@storybook/test": "^8.6.18",
+        "@tailwindcss/vite": "^4.2.1",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
         "@types/d3": "^7.4.3",
@@ -45,6 +47,7 @@
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "storybook": "^8.6.18",
+        "tailwindcss": "^4.2.1",
         "typescript": "^5.9.3",
         "vite": "^5.4.21",
         "vite-plugin-dts": "^4.5.4",

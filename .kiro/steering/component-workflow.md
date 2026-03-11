@@ -29,11 +29,21 @@ In `defaults.ts`, define a `DEFAULT_CONFIG` constant with sensible defaults for 
 ## 3. Implement the Component
 
 In `{BlockName}.tsx`:
-- Accept `data`, `config`, `locale`, `className` props
+- Accept `data`, `config`, `locale`, `className` props (not all blocks need every prop — e.g., ImageZoom uses `src`/`alt` instead of `data`)
 - Merge user config with `DEFAULT_CONFIG` via shallow per-sub-object merge
-- Use D3 for SVG math and data joins only — React owns the DOM
-- Attach `ResizeObserver` for responsive sizing (debounced)
+- For D3-based blocks: use D3 for SVG math and data joins only — React owns the DOM
+- For pure React blocks: no D3 dependency needed (e.g., ImageZoom)
+- Attach `ResizeObserver` for responsive sizing if needed (debounced)
 - Clean up all D3 selections, observers, and listeners on unmount
+
+### Hybrid Tailwind Styling (optional per block)
+
+Some blocks (e.g., ImageZoom) use a hybrid styling approach where Tailwind utility classes handle layout, transitions, and transforms, while the library's CSS custom property token system handles theming. When using this approach:
+
+- Tailwind utilities are used for layout properties (`overflow-hidden`, `w-full`, `h-full`, `cursor-zoom-in`) and dynamic values (`hover:scale-[N]`, `duration-[Nms]`)
+- Component-level CSS custom properties still follow the three-tier token architecture for colors, borders, and radii
+- `tailwindcss` is declared as a peer dependency — consumers must have Tailwind configured for utility classes to take effect
+- The component should still render and function correctly without Tailwind (graceful degradation), though layout utilities won't apply
 
 ## 4. CSS Custom Properties
 

@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Ay UI Library is a standalone, publishable npm package containing reusable D3-powered visualization components for React. It is designed as an independent design system that can be consumed by any React project.
+Ay UI Library is a standalone, publishable npm package containing reusable UI components for React — including D3-powered visualizations and interactive image/media blocks. It is designed as an independent design system that can be consumed by any React project.
 
 ## Relationship to Bürküt
 
-Bürküt is an interactive history explorer app. Ay UI Library was created to house visualization components (starting with `SpiralTimeline`) that Bürküt will consume as an npm dependency. The key principle: **zero coupling**.
+Bürküt is an interactive history explorer app. Ay UI Library was created to house reusable UI components (starting with `SpiralTimeline`, then `ImageZoom`) that Bürküt will consume as an npm dependency. The key principle: **zero coupling**.
 
 - Ay UI Library has no imports from Bürküt
 - All data, callbacks, and locale are passed via props
@@ -18,8 +18,9 @@ Bürküt is an interactive history explorer app. Ay UI Library was created to ho
 A "Block" is an independent, self-contained UI component living in `src/blocks/{BlockName}/`. Each Block:
 
 - Is a React component accepting data and configuration via props
-- Uses D3 for SVG math/scales/data-joins (not for DOM creation outside SVG)
+- May use D3 for SVG math/scales/data-joins (e.g., SpiralTimeline) or be pure React (e.g., ImageZoom) — D3 is not required for every block
 - Follows the three-tier CSS custom property architecture for theming
+- May use Tailwind utility classes for layout alongside the token system (hybrid styling approach)
 - Includes co-located tests, stories, and documentation
 - Is exported from the package barrel (`src/index.ts`)
 

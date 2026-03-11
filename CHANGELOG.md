@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-06-14
+
+### Added
+
+- `ImageZoom` block component — mouse-tracking zoom-on-hover for images with configurable zoom levels (1.5×, 2×, 2.5×, 3×) and transition duration.
+- Hybrid styling approach: Tailwind utility classes for layout and transforms, CSS custom property tokens for theming.
+- Placeholder state when no image source is provided.
+- Error fallback state displaying alt text when image fails to load.
+- Accessibility: required `alt` prop, decorative image support via empty `alt` with `role="img"`.
+- Custom `className` and `imageClassName` pass-through props.
+- Property-based tests (fast-check) and unit tests for ImageZoom.
+- Storybook stories with interactive controls and MDX documentation page.
+- `tailwindcss` added as a peer dependency (`^4.2.1`).
+
+### Changed
+
+- Updated library description from "D3-powered visualization components" to "visualization and interactive components" to reflect the broader scope.
+
 ## [0.2.0] — 2026-03-11
 
 ### Added
@@ -31,4 +49,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `ImageZoom` block component
+- Initial project scaffolding with Vite library mode, Storybook, Vitest, and Biome.

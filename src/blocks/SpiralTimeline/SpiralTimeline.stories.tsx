@@ -346,8 +346,8 @@ type Story = StoryObj;
 export const Default: Story = {
   args: {
     locale: "tr",
-    yearsToShow: 3
-  }
+    yearsToShow: 3,
+  },
 };
 
 /** Each of the five data-node shapes rendered with labeled types. */

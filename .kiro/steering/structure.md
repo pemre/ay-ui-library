@@ -5,22 +5,30 @@ ay-ui-library/
 ├── src/
 │   ├── index.ts                              # Barrel export — re-exports all blocks + public types
 │   ├── blocks/
-│   │   └── SpiralTimeline/
-│   │       ├── SpiralTimeline.tsx             # Main component
-│   │       ├── SpiralTimeline.css             # Component-level CSS custom properties
-│   │       ├── SpiralTimeline.test.tsx         # Vitest + RTL tests (unit + property-based)
-│   │       ├── SpiralTimeline.stories.tsx      # Storybook stories with args/controls/play functions
-│   │       ├── SpiralTimeline.mdx             # MDX documentation page for Storybook
+│   │   ├── SpiralTimeline/
+│   │   │   ├── SpiralTimeline.tsx             # Main component
+│   │   │   ├── SpiralTimeline.css             # Component-level CSS custom properties
+│   │   │   ├── SpiralTimeline.test.tsx         # Vitest + RTL tests (unit + property-based)
+│   │   │   ├── SpiralTimeline.stories.tsx      # Storybook stories with args/controls/play functions
+│   │   │   ├── SpiralTimeline.mdx             # MDX documentation page for Storybook
+│   │   │   ├── types.ts                       # Public TypeScript interfaces
+│   │   │   ├── defaults.ts                    # DEFAULT_CONFIG constant
+│   │   │   ├── geometry.ts                    # Pure spiral math functions
+│   │   │   ├── geometry.test.ts               # Geometry property tests
+│   │   │   ├── shapes.ts                      # SVG shape rendering utilities
+│   │   │   ├── shapes.test.ts                 # Shape unit tests
+│   │   │   ├── colors.ts                      # Color interpolation + fog utilities
+│   │   │   ├── colors.test.ts                 # Color property tests
+│   │   │   ├── TimeWindowSlider.tsx           # Time window slider sub-component
+│   │   │   └── ZoomControls.tsx               # Zoom controls sub-component
+│   │   └── ImageZoom/
+│   │       ├── ImageZoom.tsx                  # Main component (pure React, no D3)
+│   │       ├── ImageZoom.css                  # Component-level CSS custom properties
+│   │       ├── ImageZoom.test.tsx              # Vitest + RTL tests (unit + property-based)
+│   │       ├── ImageZoom.stories.tsx           # Storybook stories with args/controls
+│   │       ├── ImageZoom.mdx                  # MDX documentation page for Storybook
 │   │       ├── types.ts                       # Public TypeScript interfaces
-│   │       ├── defaults.ts                    # DEFAULT_CONFIG constant
-│   │       ├── geometry.ts                    # Pure spiral math functions
-│   │       ├── geometry.test.ts               # Geometry property tests
-│   │       ├── shapes.ts                      # SVG shape rendering utilities
-│   │       ├── shapes.test.ts                 # Shape unit tests
-│   │       ├── colors.ts                      # Color interpolation + fog utilities
-│   │       ├── colors.test.ts                 # Color property tests
-│   │       ├── TimeWindowSlider.tsx           # Time window slider sub-component
-│   │       └── ZoomControls.tsx               # Zoom controls sub-component
+│   │       └── defaults.ts                    # DEFAULT_CONFIG constant
 │   ├── styles/
 │   │   └── tokens.css                         # Core + semantic design tokens (light/dark)
 │   └── tests/
@@ -70,6 +78,9 @@ Utility modules (e.g., `geometry.ts`, `colors.ts`, `shapes.ts`) live alongside t
 ```typescript
 export { SpiralTimeline } from "./blocks/SpiralTimeline/SpiralTimeline.tsx";
 export type { DataNode, SpiralTimelineConfig, /* ... */ } from "./blocks/SpiralTimeline/types.ts";
+
+export { ImageZoom } from "./blocks/ImageZoom/ImageZoom.tsx";
+export type { ImageZoomConfig, ImageZoomProps, ZoomLevel } from "./blocks/ImageZoom/types.ts";
 ```
 
 ### Naming Conventions

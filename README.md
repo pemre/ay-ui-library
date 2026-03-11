@@ -1,6 +1,6 @@
 # 🌜 Ay UI Library
 
-Reusable D3-powered visualization components for React.
+Reusable visualization and interactive components for React.
 
 [![Build](https://img.shields.io/github/actions/workflow/status/pemre/ay-ui-library/ci.yml?branch=main)](https://github.com/pemre/ay-ui-library/actions)
 [![npm](https://img.shields.io/npm/v/ay-ui-library)](https://www.npmjs.com/package/ay-ui-library)
@@ -11,7 +11,7 @@ Reusable D3-powered visualization components for React.
 ## Philosophy & Design Principles
 
 - **Standalone package** — Zero coupling to any consuming app. Data, callbacks, and locale are passed via props.
-- **D3 for math, React owns the DOM** — D3 handles scales, color interpolators, geometry, and data joins inside a single `<svg>`. It never creates DOM outside the SVG element.
+- **D3 for math, React owns the DOM** — D3-powered components use D3 for scales, color interpolators, geometry, and data joins inside a single `<svg>`. It never creates DOM outside the SVG element.
 - **CSS custom properties for theming** — A three-tier token architecture (core → semantic → component) enables theme switching via `data-theme` attribute or CSS variable overrides.
 - **Blocks architecture** — Each component lives in `src/blocks/{Name}/` with co-located `.tsx`, `.css`, `.test.tsx`, and `.stories.tsx` files. A barrel `src/index.ts` re-exports the public API.
 - **Property-based testing** — Correctness properties are encoded as executable tests using fast-check, complemented by unit tests with Vitest and Testing Library.
@@ -84,6 +84,40 @@ function App() {
 ```
 
 See the [Storybook demo](https://pemre.github.io/ay-ui-library/) for interactive examples and full API documentation.
+
+### ImageZoom
+
+A mouse-tracking zoom-on-hover component for images. Users hover over an image and the cursor position is tracked as a percentage of the image dimensions — the image scales up around that point, letting users inspect detail without navigating away.
+
+- Configurable zoom levels: 1.5×, 2×, 2.5×, 3×
+- Configurable transition duration
+- Placeholder and error fallback states
+- Accessible: required `alt` prop, decorative image support via empty `alt`
+- Hybrid styling: Tailwind utilities for layout/transforms + CSS custom property tokens for theming
+
+> **Note:** ImageZoom requires `tailwindcss` as a peer dependency. Your consuming project must have Tailwind CSS configured for the hover-zoom and layout utilities to take effect.
+
+```tsx
+import { ImageZoom } from "ay-ui-library";
+import "ay-ui-library/dist/style.css";
+import type { ImageZoomConfig } from "ay-ui-library";
+
+const config: ImageZoomConfig = {
+  zoomLevel: 2.5,
+  transitionDuration: 400,
+};
+
+function App() {
+  return (
+    <ImageZoom
+      src="/photos/landscape.jpg"
+      alt="Mountain landscape at sunset"
+      config={config}
+      className="my-custom-container"
+    />
+  );
+}
+```
 
 ---
 

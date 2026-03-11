@@ -7,6 +7,7 @@
 | Language | TypeScript (strict mode) | ^5.9 |
 | Framework | React | ^18.0.0 |
 | Visualization | D3 | ^7.0.0 |
+| Utility CSS | Tailwind CSS | ^4.0.0 |
 | Bundler | Vite (library mode) | ^5.4 |
 | Type declarations | vite-plugin-dts | ^4.5 |
 | Component dev | Storybook (React-Vite) | ^8.6 |
@@ -15,9 +16,9 @@
 | Property-based testing | fast-check | ^4.6 |
 | DOM environment | jsdom | ^28.1 |
 | Linting/Formatting | Biome | ^2.4 |
-| Styling | Plain CSS with custom properties (no CSS-in-JS) |
+| Styling | Plain CSS with custom properties (no CSS-in-JS); hybrid Tailwind utilities for select blocks (e.g., ImageZoom) |
 
-React, ReactDOM, and D3 are **peer dependencies** — they are externalized from the build output.
+React, ReactDOM, D3, and Tailwind CSS are **peer dependencies** — they are externalized from the build output.
 
 ## Commands
 
@@ -94,4 +95,4 @@ Components consume **semantic tokens only**. Core tokens are never referenced di
 - CSS processing enabled in tests
 - `passWithNoTests: true`
 - Property tests use fast-check with minimum 100 iterations per property
-- Property test tag format: `// Feature: d3-timeline-widget, Property {N}: {title}`
+- Property test tag format: `// Feature: {feature-name}, Property {N}: {title}`

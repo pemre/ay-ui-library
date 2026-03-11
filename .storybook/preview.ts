@@ -1,5 +1,6 @@
 import type { Decorator, Preview } from "@storybook/react";
 import { useEffect } from "react";
+import "./tailwind.css";
 import "../src/styles/tokens.css";
 
 const VIEWPORTS = {
