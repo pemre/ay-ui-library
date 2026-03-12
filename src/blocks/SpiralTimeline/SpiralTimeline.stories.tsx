@@ -118,8 +118,8 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
       yearsToShow: args.yearsToShow as number,
       yearLabelPosition: args.yearLabelPosition as SpiralTimelineProps["config"] extends infer C
         ? C extends { yearLabelPosition?: infer Y }
-        ? Y
-        : never
+          ? Y
+          : never
         : never,
       zoom: {
         speed: args["zoom.speed"] as number,
@@ -143,8 +143,8 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
       },
       types: args.types as SpiralTimelineProps["config"] extends infer C
         ? C extends { types?: infer T }
-        ? T
-        : never
+          ? T
+          : never
         : never,
       timeWindow: {
         visible: args["timeWindow.visible"] as boolean,
@@ -641,10 +641,7 @@ export const PerformanceStress: Story = {
 
     return (
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
-        <SpiralTimeline
-          {...props}
-          data={data}
-        />
+        <SpiralTimeline {...props} data={data} />
         <FpsOverlay />
       </div>
     );
