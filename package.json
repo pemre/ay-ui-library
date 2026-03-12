@@ -10,7 +10,7 @@
         "dist"
     ],
     "scripts": {
-        "dev": "storybook dev -p 6006",
+        "dev": "STORYBOOK=true storybook dev -p 6006",
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest",
@@ -18,8 +18,8 @@
         "lint": "biome check src",
         "lint:fix": "biome check --fix src",
         "format": "biome format --write src",
-        "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "storybook": "STORYBOOK=true storybook dev -p 6006",
+        "build-storybook": "STORYBOOK=true storybook build"
     },
     "peerDependencies": {
         "d3": "^7.0.0",
