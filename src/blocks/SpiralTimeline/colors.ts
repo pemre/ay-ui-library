@@ -34,6 +34,25 @@ export function getYearColor(offset: number, interpolator: (t: number) => string
   return interpolator((((offset % 10) + 10) % 10) / 10);
 }
 
+const MONTH_COLORS = [
+  "#b6a6d9", // January
+  "#7fa7e0", // February
+  "#79c6d6", // March
+  "#7fe3b5", // April
+  "#9be36f", // May
+  "#cfe96a", // June
+  "#f1dd6b", // July
+  "#f6c273", // August
+  "#f3a07e", // September
+  "#f16f6a", // October
+  "#ea6fa2", // November
+  "#c084d8", // December
+];
+
+export function getMonthColor(monthIndex: number): string {
+  return MONTH_COLORS[monthIndex];
+}
+
 /**
  * Returns a season-appropriate color for the given month index (0–11).
  *
@@ -45,24 +64,22 @@ export function getYearColor(offset: number, interpolator: (t: number) => string
 export function getSeasonColor(monthIndex: number): string {
   const m = ((monthIndex % 12) + 12) % 12;
 
-  if (m === 11 || m === 0 || m === 1) {
-    // Winter — blue
-    const progress = m === 11 ? 0 : m === 0 ? 0.33 : 0.67;
-    return interpolateRgb("#1e3a8a", "#3b82f6")(progress);
+  const seasons = [
+    { start: 11, length: 3, from: "#3b4e9c", to: "#e0f2fe" }, // Winter
+    { start: 2,  length: 3, from: "#f9a8d4", to: "#86efac" }, // Spring
+    { start: 5,  length: 3, from: "#2e9d2a", to: "#f4ca61" }, // Summer
+    { start: 8,  length: 3, from: "#fdba74", to: "#c2410c" }, // Autumn
+  ];
+
+  for (const { start, length, from, to } of seasons) {
+    const offset = (m - start + 12) % 12;
+    if (offset < length) {
+      const progress = offset / (length - 1);
+      return interpolateRgb(from, to)(progress);
+    }
   }
-  if (m >= 2 && m <= 4) {
-    // Spring — yellow/green
-    const progress = (m - 2) / 2;
-    return interpolateRgb("#fbbf24", "#84cc16")(progress);
-  }
-  if (m >= 5 && m <= 7) {
-    // Summer — green/teal
-    const progress = (m - 5) / 2;
-    return interpolateRgb("#22c55e", "#14b8a6")(progress);
-  }
-  // Autumn — orange/brown
-  const progress = (m - 8) / 2;
-  return interpolateRgb("#f97316", "#92400e")(progress);
+
+  return "#ffffff";
 }
 
 /**

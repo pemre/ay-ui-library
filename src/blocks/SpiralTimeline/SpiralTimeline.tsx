@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { computeFogOpacity, getColorInterpolator, getSeasonColor, getYearColor } from "./colors.ts";
+import { computeFogOpacity, getColorInterpolator, getMonthColor, getYearColor } from "./colors.ts";
 import { DEFAULT_CONFIG } from "./defaults.ts";
 import {
   computeMaxRadius,
@@ -75,6 +75,7 @@ const SEGS_PER_YEAR = 60;
 const FADE_OUT_FRACTION = 0.25;
 const NODE_SIZE = 5;
 const RESIZE_DEBOUNCE_MS = 200;
+const RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH = 20;
 
 interface PrevGeom {
   oldestYear: number;
@@ -246,15 +247,15 @@ export function SpiralTimeline({
       for (let m = 0; m < 12; m++) {
         const arcStartAngle = -(m + 1) * (Math.PI / 6);
         const arcEndAngle = -m * (Math.PI / 6);
-        const segmentsPerWedge = 20;
-        const seasonColor = getSeasonColor(m);
+        const segmentsPerWedge = 12;
+        const seasonColor = getMonthColor(m);
 
         for (let seg = 0; seg < segmentsPerWedge; seg++) {
           const innerR = (seg * maxRadius) / segmentsPerWedge;
           const outerR = ((seg + 1) * maxRadius) / segmentsPerWedge;
           const progress = seg / segmentsPerWedge;
           const segColor = d3.interpolateRgb("rgba(0,0,0,0)", seasonColor)(progress);
-          const opacity = 0.15 * progress;
+          const opacity = 0.2 * progress;
 
           const arcPath = d3
             .arc<unknown>()
@@ -272,11 +273,11 @@ export function SpiralTimeline({
 
         // Radial month grid line with gradient opacity
         const monthAngle = -Math.PI / 2 - (m * Math.PI) / 6;
-        const lineSegments = 50;
+        const lineSegments = 6;
         for (let i = 0; i < lineSegments; i++) {
-          const r1 = (i / lineSegments) * maxRadius;
-          const r2 = ((i + 1) / lineSegments) * maxRadius;
-          const lineOpacity = 0.1 + (i / lineSegments) * 0.4;
+          const r1 = (i / lineSegments) * maxRadius + RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH;
+          const r2 = ((i + 1) / lineSegments) * maxRadius + RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH;
+          const lineOpacity = (i / lineSegments) * 0.2;
           layers.radialLines
             .append("line")
             .attr("x1", Math.cos(monthAngle) * r1)
