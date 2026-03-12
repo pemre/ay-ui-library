@@ -2,7 +2,7 @@
 
 Reusable visualization and interactive components for React.
 
-[![Build](https://img.shields.io/github/actions/workflow/status/pemre/ay-ui-library/ci.yml?branch=main)](https://github.com/pemre/ay-ui-library/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/pemre/ay-ui-library/deploy-docs.yml?branch=main)](https://github.com/pemre/ay-ui-library/actions)
 [![npm](https://img.shields.io/npm/v/ay-ui-library)](https://www.npmjs.com/package/ay-ui-library)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
