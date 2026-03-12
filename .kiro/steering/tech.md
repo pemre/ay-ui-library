@@ -104,4 +104,5 @@ Components consume **semantic tokens only**. Core tokens are never referenced di
 - Builds Storybook (`npm run build-storybook`) and deploys to GitHub Pages
 - Live URL: https://pemre.github.io/ay-ui-library/
 - Uses `actions/upload-pages-artifact@v3` and `actions/deploy-pages@v4`
-- Node.js 20 with npm cache for fast installs (`npm ci`)
+- Node.js 22 with npm cache for fast installs (`npm ci`)
+- `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to opt into Node.js 24 action runtime
