@@ -1,6 +1,7 @@
 import type {
   AnimationConfig,
   FogConfig,
+  RadialGridConfig,
   RingGradientConfig,
   SpiralTimelineLabels,
   TimeWindowConfig,
@@ -16,6 +17,7 @@ export const DEFAULT_CONFIG: {
   fog: FogConfig;
   ringGradient: RingGradientConfig;
   animations: AnimationConfig;
+  radialGrid: RadialGridConfig;
   timeWindow: TimeWindowConfig;
   types: TypeConfig[];
   labels: Required<SpiralTimelineLabels>;
@@ -41,6 +43,11 @@ export const DEFAULT_CONFIG: {
   animations: {
     enabled: true,
     duration: 400,
+  },
+  radialGrid: {
+    monthExtraLength: 20,
+    weekExtraLength: 12,
+    dayExtraLength: 6,
   },
   timeWindow: {
     visible: true,

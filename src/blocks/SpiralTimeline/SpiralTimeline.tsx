@@ -14,6 +14,7 @@ import type {
   AnimationConfig,
   DataNode,
   FogConfig,
+  RadialGridConfig,
   RingGradientConfig,
   SpiralTimelineLabels,
   SpiralTimelineProps,
@@ -33,6 +34,7 @@ interface MergedConfig {
   fog: FogConfig;
   ringGradient: RingGradientConfig;
   animations: AnimationConfig;
+  radialGrid: RadialGridConfig;
   timeWindow: TimeWindowConfig;
   types: TypeConfig[];
   labels: Required<SpiralTimelineLabels>;
@@ -47,6 +49,7 @@ function mergeConfig(user: SpiralTimelineProps["config"]): MergedConfig {
     fog: { ...DEFAULT_CONFIG.fog, ...user?.fog },
     ringGradient: { ...DEFAULT_CONFIG.ringGradient, ...user?.ringGradient },
     animations: { ...DEFAULT_CONFIG.animations, ...user?.animations },
+    radialGrid: { ...DEFAULT_CONFIG.radialGrid, ...user?.radialGrid },
     timeWindow: {
       ...DEFAULT_CONFIG.timeWindow,
       ...user?.timeWindow,
@@ -75,7 +78,6 @@ const SEGS_PER_YEAR = 60;
 const FADE_OUT_FRACTION = 0.25;
 const NODE_SIZE = 5;
 const RESIZE_DEBOUNCE_MS = 200;
-const RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH = 20;
 
 interface PrevGeom {
   oldestYear: number;
@@ -275,8 +277,8 @@ export function SpiralTimeline({
         const monthAngle = -Math.PI / 2 - (m * Math.PI) / 6;
         const lineSegments = 6;
         for (let i = 0; i < lineSegments; i++) {
-          const r1 = (i / lineSegments) * maxRadius + RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH;
-          const r2 = ((i + 1) / lineSegments) * maxRadius + RADIAL_MONTH_GRID_LINE_EXTRA_LENGTH;
+          const r1 = (i / lineSegments) * maxRadius + cfg.radialGrid.monthExtraLength;
+          const r2 = ((i + 1) / lineSegments) * maxRadius + cfg.radialGrid.monthExtraLength;
           const lineOpacity = (i / lineSegments) * 0.2;
           layers.radialLines
             .append("line")
@@ -287,6 +289,45 @@ export function SpiralTimeline({
             .attr("stroke", "var(--spiral-text-secondary, #cbd5e1)")
             .attr("stroke-width", 1.5)
             .attr("opacity", lineOpacity);
+        }
+
+        // Week tick marks (3 per month) at outer edge
+        const monthArcSpan = Math.PI / 6; // 30° per month
+        for (let w = 1; w <= 3; w++) {
+          const weekFraction = w / 4; // 4 weeks per month
+          if (weekFraction >= 1) break;
+          const weekAngle = -Math.PI / 2 - (m + weekFraction) * monthArcSpan;
+          const wr1 = maxRadius;
+          const wr2 = maxRadius + cfg.radialGrid.weekExtraLength;
+          layers.radialLines
+            .append("line")
+            .attr("x1", Math.cos(weekAngle) * wr1)
+            .attr("y1", Math.sin(weekAngle) * wr1)
+            .attr("x2", Math.cos(weekAngle) * wr2)
+            .attr("y2", Math.sin(weekAngle) * wr2)
+            .attr("stroke", "var(--spiral-text-secondary, #cbd5e1)")
+            .attr("stroke-width", 1)
+            .attr("opacity", 0.2);
+        }
+
+        // Day tick marks (28 per month, like "7 days a week") at outer edge
+        for (let d = 1; d < 28; d++) {
+          const dayFraction = d / 28;
+          const dayAngle = -Math.PI / 2 - (m + dayFraction) * monthArcSpan;
+          // Skip positions that overlap with week lines
+          const isWeekDay = d % 7 === 0;
+          if (isWeekDay) continue;
+          const dr1 = maxRadius;
+          const dr2 = maxRadius + cfg.radialGrid.dayExtraLength;
+          layers.radialLines
+            .append("line")
+            .attr("x1", Math.cos(dayAngle) * dr1)
+            .attr("y1", Math.sin(dayAngle) * dr1)
+            .attr("x2", Math.cos(dayAngle) * dr2)
+            .attr("y2", Math.sin(dayAngle) * dr2)
+            .attr("stroke", "var(--spiral-text-secondary, #cbd5e1)")
+            .attr("stroke-width", 1)
+            .attr("opacity", 0.2);
         }
       }
 
@@ -302,7 +343,7 @@ export function SpiralTimeline({
           .text(monthLabels[m]);
       }
     },
-    [monthLabels],
+    [monthLabels, cfg.radialGrid],
   );
 
   /* ── Spiral point helper with fog/gradient for a given geometry ── */

@@ -9,6 +9,7 @@ export type {
   DataNode,
   FogConfig,
   NodeShape,
+  RadialGridConfig,
   RingGradientConfig,
   SpiralTimelineConfig,
   SpiralTimelineLabels,

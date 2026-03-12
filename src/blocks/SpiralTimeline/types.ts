@@ -68,6 +68,17 @@ export interface RingGradientConfig {
   applyTo: GradientTarget[];
 }
 
+// ── Radial Grid Configuration ──────────────────────────────
+
+export interface RadialGridConfig {
+  /** Extra length (beyond maxRadius) for month grid lines (default: 20). */
+  monthExtraLength: number;
+  /** Extra length (beyond maxRadius) for week grid lines (default: 12). */
+  weekExtraLength: number;
+  /** Extra length (beyond maxRadius) for day grid lines (default: 6). */
+  dayExtraLength: number;
+}
+
 // ── Animation Configuration ────────────────────────────────
 
 export interface AnimationConfig {
@@ -133,6 +144,8 @@ export interface SpiralTimelineConfig {
   ringGradient?: Partial<RingGradientConfig>;
   /** Transition animation configuration. */
   animations?: Partial<AnimationConfig>;
+  /** Radial grid line configuration (month/week/day extra lengths). */
+  radialGrid?: Partial<RadialGridConfig>;
   /** Time window slider configuration. */
   timeWindow?: Partial<TimeWindowConfig>;
   /** Data-node type → visual mapping. */
