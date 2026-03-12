@@ -71,9 +71,9 @@ function getDayOfYear(date: Date): number {
 }
 
 /** Segments per year for the spiral path resolution. */
-const SEGS_PER_YEAR = 120;
+const SEGS_PER_YEAR = 60;
 const FADE_OUT_FRACTION = 0.25;
-const NODE_SIZE = 14;
+const NODE_SIZE = 5;
 const RESIZE_DEBOUNCE_MS = 200;
 
 interface PrevGeom {

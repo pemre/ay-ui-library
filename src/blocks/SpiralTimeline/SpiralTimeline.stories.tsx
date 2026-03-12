@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { FpsOverlay } from "./FpsOverlay.tsx";
 import { SpiralTimeline } from "./SpiralTimeline.tsx";
+import { generateStressData } from "./stressData.ts";
 import type { DataNode, SpiralTimelineProps } from "./types.ts";
 
 /* ── Sample Data ─────────────────────────────────────────── */
@@ -116,8 +118,8 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
       yearsToShow: args.yearsToShow as number,
       yearLabelPosition: args.yearLabelPosition as SpiralTimelineProps["config"] extends infer C
         ? C extends { yearLabelPosition?: infer Y }
-          ? Y
-          : never
+        ? Y
+        : never
         : never,
       zoom: {
         speed: args["zoom.speed"] as number,
@@ -141,8 +143,8 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
       },
       types: args.types as SpiralTimelineProps["config"] extends infer C
         ? C extends { types?: infer T }
-          ? T
-          : never
+        ? T
+        : never
         : never,
       timeWindow: {
         visible: args["timeWindow.visible"] as boolean,
@@ -162,7 +164,7 @@ const meta: Meta = {
   tags: [],
   decorators: [
     (Story) => (
-      <div style={{ width: "100%", height: "600px" }}>
+      <div style={{ width: "100%", height: "95vh" }}>
         <Story />
       </div>
     ),
@@ -608,5 +610,54 @@ export const TimeWindowSliderInteraction: Story = {
     expect(sliderWindow.getAttribute("role")).toBe("slider");
     expect(sliderWindow.getAttribute("aria-label")).toBeTruthy();
     expect(sliderWindow.getAttribute("aria-valuenow")).toBeTruthy();
+  },
+};
+
+/* ── Performance Stress Test ─────────────────────────────── */
+
+/** Performance stress test with synthetic large dataset and FPS overlay. */
+export const PerformanceStress: Story = {
+  argTypes: {
+    nodeCount: {
+      control: { type: "range", min: 100, max: 2000, step: 100 },
+      description: "Number of synthetic data nodes to generate.",
+      table: { category: "Stress Test" },
+    },
+  },
+  args: {
+    nodeCount: 500 as unknown,
+  },
+  render: (args: Record<string, unknown>) => {
+    const nodeCount = (args.nodeCount as number) ?? 500;
+    const endYear = new Date().getFullYear() + 3;
+    const startYear = endYear - 5;
+
+    const data = useMemo(
+      () => generateStressData({ count: nodeCount, startYear, endYear }),
+      [nodeCount, startYear, endYear],
+    );
+
+    const props = argsToProps(args);
+
+    return (
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <SpiralTimeline
+          {...props}
+          data={data}
+        />
+        <FpsOverlay />
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Renders the SpiralTimeline with a large synthetic dataset to stress-test SVG rendering performance. " +
+          "Use the **nodeCount** slider (100–2000) to find the threshold where performance degrades on your device. " +
+          "The FPS overlay in the top-right corner shows real-time frame rate. " +
+          "**60 FPS** = smooth rendering, **30 FPS** = acceptable, **below 15 FPS** = optimization needed.",
+      },
+    },
   },
 };

@@ -90,6 +90,10 @@ function App() {
 
 See the [Storybook demo](https://pemre.github.io/ay-ui-library/) for interactive examples and full API documentation.
 
+#### Performance Stress Test
+
+The `PerformanceStress` story renders SpiralTimeline with a large synthetic dataset (100–2000 nodes) and an FPS overlay to help identify rendering bottlenecks. Open it in Storybook and adjust the node count slider to find the threshold where performance degrades on your device.
+
 ### ImageZoom
 
 A mouse-tracking zoom-on-hover component for images. Users hover over an image and the cursor position is tracked as a percentage of the image dimensions — the image scales up around that point, letting users inspect detail without navigating away.

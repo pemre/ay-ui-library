@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] — 2026-03-13
+## [0.4.0] — 2026-03-12
 
 ### Added
 
@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `onWindowStartChange` callback prop — invoked whenever the window start changes (scroll, slider drag, click), enabling two-way binding for controlled mode.
 - Mouse wheel scroll on the time window slider — scrolling over the slider shifts the window ±1 year, matching the spiral view behavior.
 - Storybook `windowStart` number control — type a year to jump the spiral to that range.
+- `PerformanceStress` Storybook story for SpiralTimeline — renders a large synthetic dataset (100–2000 nodes) with an FPS overlay to surface rendering bottlenecks.
+- `generateStressData` utility function — pure data generator producing `DataNode[]` arrays of arbitrary size with uniformly distributed dates.
+- `FpsOverlay` component — real-time FPS counter using `requestAnimationFrame` sampling, displayed as a fixed overlay.
+- Storybook `nodeCount` range control (100–2000, step 100) for interactive performance profiling.
+- Performance guidance in story docs describing 60/30/15 FPS thresholds.
+- Property-based tests (fast-check) for data generator correctness: output length, date range, valid fields, determinism, and rendered count.
 
 ### Changed
 
@@ -34,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Layout shift when hiding the time window slider — the spiral SVG now properly fills the available space via `min-height: 0` on the flex container, and the ResizeObserver now tracks both width and height changes so the spiral re-renders to fill the available space when the slider is toggled.
 - Storybook `argsToProps` mapping verified to correctly pass `locale` and `className` without transformation loss.
 
-## [0.3.0] — 2026-03-12
+## [0.3.0] — 2026-03-11
 
 ### Added
 

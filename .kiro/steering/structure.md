@@ -20,7 +20,11 @@ ay-ui-library/
 │   │   │   ├── colors.ts                      # Color interpolation + fog utilities
 │   │   │   ├── colors.test.ts                 # Color property tests
 │   │   │   ├── TimeWindowSlider.tsx           # Time window slider sub-component
-│   │   │   └── ZoomControls.tsx               # Zoom controls sub-component
+│   │   │   ├── ZoomControls.tsx               # Zoom controls sub-component
+│   │   │   ├── stressData.ts                  # Synthetic data generator for stress testing
+│   │   │   ├── stressData.test.ts             # Stress data generator property + unit tests
+│   │   │   ├── FpsOverlay.tsx                 # FPS overlay component for performance measurement
+│   │   │   └── FpsOverlay.test.tsx            # FPS overlay unit tests
 │   │   └── ImageZoom/
 │   │       ├── ImageZoom.tsx                  # Main component (pure React, no D3)
 │   │       ├── ImageZoom.css                  # Component-level CSS custom properties
