@@ -1,18 +1,22 @@
 import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
+
+const isStorybook = process.env.STORYBOOK === "true";
 
 export default defineConfig({
     plugins: [
         tailwindcss(),
         react(),
-        dts({
-            insertTypesEntry: true,
-            rollupTypes: true,
-        }),
-    ],
+        !isStorybook
+            ? dts({
+                  insertTypesEntry: true,
+                  rollupTypes: true,
+              })
+            : null,
+    ].filter(Boolean),
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
