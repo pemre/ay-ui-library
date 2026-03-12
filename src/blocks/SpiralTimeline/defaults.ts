@@ -3,6 +3,7 @@ import type {
   FogConfig,
   RingGradientConfig,
   SpiralTimelineLabels,
+  TimeWindowConfig,
   TypeConfig,
   YearLabelPosition,
   ZoomConfig,
@@ -15,6 +16,7 @@ export const DEFAULT_CONFIG: {
   fog: FogConfig;
   ringGradient: RingGradientConfig;
   animations: AnimationConfig;
+  timeWindow: TimeWindowConfig;
   types: TypeConfig[];
   labels: Required<SpiralTimelineLabels>;
 } = {
@@ -39,6 +41,11 @@ export const DEFAULT_CONFIG: {
   animations: {
     enabled: true,
     duration: 400,
+  },
+  timeWindow: {
+    visible: true,
+    animationEnabled: true,
+    animationDuration: 400,
   },
   types: [{ key: "default", color: "#38bdf8", shape: "circle" }],
   labels: {

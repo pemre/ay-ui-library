@@ -17,6 +17,7 @@ import type {
   RingGradientConfig,
   SpiralTimelineLabels,
   SpiralTimelineProps,
+  TimeWindowConfig,
   TypeConfig,
   ZoomConfig,
 } from "./types.ts";
@@ -32,6 +33,7 @@ interface MergedConfig {
   fog: FogConfig;
   ringGradient: RingGradientConfig;
   animations: AnimationConfig;
+  timeWindow: TimeWindowConfig;
   types: TypeConfig[];
   labels: Required<SpiralTimelineLabels>;
   onNodeClick?: (node: DataNode, event: MouseEvent) => void;
@@ -45,6 +47,14 @@ function mergeConfig(user: SpiralTimelineProps["config"]): MergedConfig {
     fog: { ...DEFAULT_CONFIG.fog, ...user?.fog },
     ringGradient: { ...DEFAULT_CONFIG.ringGradient, ...user?.ringGradient },
     animations: { ...DEFAULT_CONFIG.animations, ...user?.animations },
+    timeWindow: {
+      ...DEFAULT_CONFIG.timeWindow,
+      ...user?.timeWindow,
+      animationDuration:
+        user?.timeWindow?.animationDuration ??
+        user?.animations?.duration ??
+        DEFAULT_CONFIG.timeWindow.animationDuration,
+    },
     types: user?.types ?? DEFAULT_CONFIG.types,
     labels: { ...DEFAULT_CONFIG.labels, ...user?.labels },
     onNodeClick: user?.onNodeClick,
@@ -91,6 +101,9 @@ export function SpiralTimeline({
   config: userConfig,
   locale,
   className,
+  onYearsToShowChange,
+  onWindowStartChange: onWindowStartChangeProp,
+  windowStart: controlledWindowStart,
 }: SpiralTimelineProps) {
   const cfg = useMemo(() => mergeConfig(userConfig), [userConfig]);
 
@@ -126,25 +139,51 @@ export function SpiralTimeline({
 
   // Internal state
   const [yearsToShow, setYearsToShow] = useState(cfg.yearsToShow);
-  const [windowStart, setWindowStart] = useState(dataMaxYear - cfg.yearsToShow + 1);
+  const [internalWindowStart, setInternalWindowStart] = useState(dataMaxYear - cfg.yearsToShow + 1);
   const [hoveredNode, setHoveredNode] = useState<DataNode | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [containerWidth, setContainerWidth] = useState(0);
+  const [renderKey, setRenderKey] = useState(0);
+
+  // Controlled vs uncontrolled windowStart
+  const isWindowStartControlled = controlledWindowStart !== undefined;
+  const windowStart = isWindowStartControlled ? controlledWindowStart : internalWindowStart;
+  const updateWindowStart = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      if (isWindowStartControlled) {
+        const newVal = typeof value === "function" ? value(controlledWindowStart) : value;
+        onWindowStartChangeProp?.(newVal);
+      } else {
+        setInternalWindowStart((prev) => {
+          const newVal = typeof value === "function" ? value(prev) : value;
+          onWindowStartChangeProp?.(newVal);
+          return newVal;
+        });
+      }
+    },
+    [isWindowStartControlled, controlledWindowStart, onWindowStartChangeProp],
+  );
+
+  // Sync yearsToShow when config changes from outside (controlled mode)
+  useEffect(() => {
+    setYearsToShow(cfg.yearsToShow);
+  }, [cfg.yearsToShow]);
 
   // Refs
   const svgRef = useRef<SVGSVGElement>(null);
   const layersRef = useRef<LayerRefs | null>(null);
   const prevGeomRef = useRef<PrevGeom | null>(null);
+  const lastChangeSourceRef = useRef<"slider" | "other">("other");
 
   const windowEnd = windowStart + yearsToShow - 1;
 
   // Clamp windowStart when yearsToShow changes
   useEffect(() => {
-    setWindowStart((prev) => {
+    updateWindowStart((prev) => {
       const maxStart = dataMaxYear - yearsToShow + 1;
       return Math.max(dataMinYear, Math.min(prev, maxStart));
     });
-  }, [yearsToShow, dataMinYear, dataMaxYear]);
+  }, [yearsToShow, dataMinYear, dataMaxYear, updateWindowStart]);
 
   // Month labels via Intl
   const monthLabels = useMemo(() => {
@@ -313,8 +352,10 @@ export function SpiralTimeline({
     [cfg.fog, cfg.ringGradient, colorInterpolator],
   );
 
+  const prevMonthLabelsRef = useRef<string[]>(monthLabels);
+
   /* ── Main D3 rendering effect ── */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: containerWidth triggers re-render on resize
+  // biome-ignore lint/correctness/useExhaustiveDependencies: renderKey triggers re-render on resize
   useEffect(() => {
     const svg = svgRef.current;
     if (!svg || !layersRef.current) return;
@@ -339,9 +380,16 @@ export function SpiralTimeline({
 
     const DURATION = isFirstRender ? 0 : cfg.animations.enabled ? cfg.animations.duration : 0;
 
-    // Draw static layers on first render or resize
-    if (isFirstRender) {
+    // Reset after use
+    lastChangeSourceRef.current = "other";
+
+    // Draw static layers on first render, resize, or locale change
+    const labelsChanged =
+      prevMonthLabelsRef.current.length !== monthLabels.length ||
+      prevMonthLabelsRef.current.some((l, i) => l !== monthLabels[i]);
+    if (isFirstRender || labelsChanged) {
       drawStaticLayers(maxRadius);
+      prevMonthLabelsRef.current = monthLabels;
     }
 
     const spiralPointAtCurrent = (absYear: number) =>
@@ -352,13 +400,13 @@ export function SpiralTimeline({
 
     const spiralPointAtPrev = hasPrevGeom
       ? (absYear: number) =>
-        spiralPointWith(
-          absYear,
-          prevGeom.oldestYear,
-          prevGeom.radiusIncrement,
-          prevGeom.yearRange,
-          prevGeom.newestYear,
-        )
+          spiralPointWith(
+            absYear,
+            prevGeom.oldestYear,
+            prevGeom.radiusIncrement,
+            prevGeom.yearRange,
+            prevGeom.newestYear,
+          )
       : spiralPointAtCurrent;
 
     // ── SPIRAL PATH SEGMENTS (data-joined) ──
@@ -662,17 +710,17 @@ export function SpiralTimeline({
 
     const dateToSpiralPrev = hasPrevGeom
       ? (date: Date) => {
-        const yDiff = date.getFullYear() - prevGeom.oldestYear;
-        const doy = getDayOfYear(date);
-        const rot = yDiff + doy / 365;
-        const a = -Math.PI / 2 - rot * 2 * Math.PI;
-        const r = rot * prevGeom.radiusIncrement;
-        return { x: Math.cos(a) * r, y: Math.sin(a) * r };
-      }
+          const yDiff = date.getFullYear() - prevGeom.oldestYear;
+          const doy = getDayOfYear(date);
+          const rot = yDiff + doy / 365;
+          const a = -Math.PI / 2 - rot * 2 * Math.PI;
+          const r = rot * prevGeom.radiusIncrement;
+          return { x: Math.cos(a) * r, y: Math.sin(a) * r };
+        }
       : (date: Date) => {
-        const sp = dateToSpiral(date, oldestYear, radiusIncrement);
-        return { x: sp.x, y: sp.y };
-      };
+          const sp = dateToSpiral(date, oldestYear, radiusIncrement);
+          return { x: sp.x, y: sp.y };
+        };
 
     interface VisibleNode extends DataNode {
       nodeId: string;
@@ -828,13 +876,14 @@ export function SpiralTimeline({
     validData,
     windowStart,
     windowEnd,
-    containerWidth,
+    renderKey,
     cfg,
     drawStaticLayers,
     spiralPointWith,
     colorInterpolator,
     getTypeConfig,
     locale,
+    monthLabels,
   ]);
 
   /* ── ResizeObserver (debounced 200ms) ── */
@@ -845,25 +894,30 @@ export function SpiralTimeline({
     if (!container) return;
 
     let prevWidth = 0;
+    let prevHeight = 0;
     let timeout: ReturnType<typeof setTimeout>;
     const observer = new ResizeObserver((entries) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         const entry = entries[0];
         if (!entry) return;
-        const { width } = entry.contentRect;
-        // Skip if width hasn't actually changed — avoids wiping a valid render
-        if (width === prevWidth) return;
+        const { width, height } = entry.contentRect;
+        // Skip if neither dimension changed — avoids wiping a valid render
+        if (width === prevWidth && height === prevHeight) return;
         prevWidth = width;
+        prevHeight = height;
         initLayers();
         setContainerWidth(width);
+        setRenderKey((k) => k + 1);
       }, RESIZE_DEBOUNCE_MS);
     });
 
     observer.observe(container);
     // Initial size
     prevWidth = container.clientWidth;
+    prevHeight = container.clientHeight;
     setContainerWidth(container.clientWidth);
+    setRenderKey((k) => k + 1);
     initLayers();
 
     return () => {
@@ -879,26 +933,39 @@ export function SpiralTimeline({
     };
   }, [initLayers]);
 
-  /* ── Mouse wheel zoom ── */
+  /* ── Slider-driven window start change ── */
+  const handleWindowStartChange = useCallback(
+    (newStart: number) => {
+      lastChangeSourceRef.current = "slider";
+      updateWindowStart(newStart);
+    },
+    [updateWindowStart],
+  );
+
+  /* ── Mouse wheel scroll ── */
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       if (!cfg.zoom.mouseWheel) return;
       e.preventDefault();
       if (e.deltaY > 0) {
-        setYearsToShow((prev) => Math.min(totalDataYears, prev + 1));
+        // Scroll forward in time
+        updateWindowStart((prev) => Math.min(dataMaxYear - yearsToShow + 1, prev + 1));
       } else {
-        setYearsToShow((prev) => Math.max(1, prev - 1));
+        // Scroll backward in time
+        updateWindowStart((prev) => Math.max(dataMinYear, prev - 1));
       }
     },
-    [cfg.zoom.mouseWheel, totalDataYears],
+    [cfg.zoom.mouseWheel, dataMinYear, dataMaxYear, yearsToShow, updateWindowStart],
   );
 
   /* ── Zoom handler (for ZoomControls + mouse wheel) ── */
   const handleYearsToShowChange = useCallback(
     (newValue: number) => {
-      setYearsToShow(Math.max(1, Math.min(totalDataYears, newValue)));
+      const clamped = Math.max(1, Math.min(totalDataYears, newValue));
+      setYearsToShow(clamped);
+      onYearsToShowChange?.(clamped);
     },
-    [totalDataYears],
+    [totalDataYears, onYearsToShowChange],
   );
 
   /* ── Tooltip date formatting ── */
@@ -946,14 +1013,18 @@ export function SpiralTimeline({
         </div>
       </div>
 
-      <TimeWindowSlider
-        dataMinYear={dataMinYear}
-        dataMaxYear={dataMaxYear}
-        yearsToShow={yearsToShow}
-        windowStart={windowStart}
-        labels={cfg.labels}
-        onWindowStartChange={setWindowStart}
-      />
+      {cfg.timeWindow.visible && (
+        <TimeWindowSlider
+          dataMinYear={dataMinYear}
+          dataMaxYear={dataMaxYear}
+          yearsToShow={yearsToShow}
+          windowStart={windowStart}
+          labels={cfg.labels}
+          onWindowStartChange={handleWindowStartChange}
+          animationEnabled={cfg.timeWindow.animationEnabled}
+          animationDuration={cfg.timeWindow.animationDuration}
+        />
+      )}
     </div>
   );
 }

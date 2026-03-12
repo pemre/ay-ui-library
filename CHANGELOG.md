@@ -5,7 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] — 2026-06-14
+## [0.4.0] — 2026-03-13
+
+### Added
+
+- `TimeWindowConfig` — new config sub-object for the time window slider with `visible`, `animationEnabled`, and `animationDuration` fields.
+- Hideable time window slider via `config.timeWindow.visible` (default: `true`).
+- Animated slider indicator — the draggable window smoothly transitions left/right when position changes, controlled by `timeWindow.animationEnabled` and `timeWindow.animationDuration`.
+- Controlled `yearsToShow` — new `onYearsToShowChange` callback prop enables parent components to control the zoom level externally. The component syncs internal state when `config.yearsToShow` changes.
+- Semi-transparent fill (~50% opacity) on data node shapes for easier hover detection.
+- Storybook controls for all new `timeWindow.*` fields under a "Time Window" category.
+- Controlled `windowStart` prop — consumers can now set the visible year range externally. When provided, the component uses this value instead of internal state.
+- `onWindowStartChange` callback prop — invoked whenever the window start changes (scroll, slider drag, click), enabling two-way binding for controlled mode.
+- Mouse wheel scroll on the time window slider — scrolling over the slider shifts the window ±1 year, matching the spiral view behavior.
+- Storybook `windowStart` number control — type a year to jump the spiral to that range.
+
+### Changed
+
+- Mouse wheel over the spiral now scrolls the timeline window (shifts `windowStart` ±1 year) instead of changing the zoom level. Zoom remains available via ZoomControls buttons/slider.
+- Locale changes now immediately update month labels without requiring a component remount.
+
+### Removed
+
+- Redundant text from the time window slider: "Time Window" title, ring summary, total data years, and year range header text. The draggable window indicator, tick marks, tick labels, and range label are retained.
+
+### Fixed
+
+- Layout shift when hiding the time window slider — the spiral SVG now properly fills the available space via `min-height: 0` on the flex container, and the ResizeObserver now tracks both width and height changes so the spiral re-renders to fill the available space when the slider is toggled.
+- Storybook `argsToProps` mapping verified to correctly pass `locale` and `className` without transformation loss.
+
+## [0.3.0] — 2026-03-12
 
 ### Added
 

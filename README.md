@@ -54,7 +54,7 @@ Changes to the library source are reflected in the consuming app without publish
 
 ### SpiralTimeline
 
-A D3-powered spiral timeline visualization where each concentric ring represents one calendar year, months are arranged as radial sectors, and data nodes are plotted at their calendar positions. Supports configurable zoom, fog, ring gradients, animations, custom shapes, a draggable time-window slider, and full theme/locale customization.
+A D3-powered spiral timeline visualization where each concentric ring represents one calendar year, months are arranged as radial sectors, and data nodes are plotted at their calendar positions. Supports configurable zoom, fog, ring gradients, animations, custom shapes, a hideable time-window slider with animated transitions, and full theme/locale customization.
 
 ```tsx
 import { SpiralTimeline } from "ay-ui-library";
@@ -69,15 +69,20 @@ const config: SpiralTimelineConfig = {
   yearsToShow: 3,
   yearLabelPosition: "top-right",
   fog: { enabled: true, startRing: 2, intensity: 0.6 },
+  timeWindow: { visible: true, animationEnabled: true, animationDuration: 400 },
 };
 
 function App() {
+  const [windowStart, setWindowStart] = useState(2023);
+
   return (
     <SpiralTimeline
       data={data}
       config={config}
       locale="en"
-      onNodeClick={(node) => console.log(node.title)}
+      windowStart={windowStart}
+      onWindowStartChange={setWindowStart}
+      onYearsToShowChange={(years) => console.log("Zoom:", years)}
     />
   );
 }

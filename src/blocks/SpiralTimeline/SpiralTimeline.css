@@ -30,6 +30,7 @@
 
 .spiral-timeline__svg-wrap {
   flex: 1;
+  min-height: 0;
   position: relative;
   overflow: hidden;
 }
@@ -135,18 +136,6 @@
   border-top: 1px solid var(--spiral-border);
 }
 
-.spiral-timeline__slider-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--spiral-text-secondary);
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 .spiral-timeline__slider-track {
   position: relative;
   width: 100%;
@@ -190,7 +179,6 @@
   border: 2px solid var(--spiral-primary);
   border-radius: 4px;
   cursor: grab;
-  transition: width 0.3s ease;
 }
 
 .spiral-timeline__slider-window:active {
@@ -207,12 +195,4 @@
   color: var(--spiral-primary);
   white-space: nowrap;
   pointer-events: none;
-}
-
-.spiral-timeline__slider-info {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 22px;
-  font-size: 11px;
-  color: var(--spiral-text-secondary);
 }

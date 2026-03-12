@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { SpiralTimelineLabels } from "./types.ts";
 
 export interface TimeWindowSliderProps {
@@ -14,6 +14,10 @@ export interface TimeWindowSliderProps {
   labels: Required<SpiralTimelineLabels>;
   /** Called when the user drags or clicks to change the window start. */
   onWindowStartChange: (newStart: number) => void;
+  /** Enable animated left/right transitions on the draggable window indicator (default: true). */
+  animationEnabled?: boolean;
+  /** Transition duration in ms for the draggable window indicator movement (default: 400). */
+  animationDuration?: number;
 }
 
 export function TimeWindowSlider({
@@ -23,11 +27,14 @@ export function TimeWindowSlider({
   windowStart,
   labels,
   onWindowStartChange,
+  animationEnabled = true,
+  animationDuration = 400,
 }: TimeWindowSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartWindowStart = useRef(0);
+  const [isDraggingState, setIsDraggingState] = useState(false);
 
   const totalDataYears = Math.max(1, dataMaxYear - dataMinYear + 1);
   const windowEnd = windowStart + yearsToShow - 1;
@@ -43,6 +50,7 @@ export function TimeWindowSlider({
   const handleWindowMouseDown = useCallback(
     (e: React.MouseEvent) => {
       isDragging.current = true;
+      setIsDraggingState(true);
       dragStartX.current = e.clientX;
       dragStartWindowStart.current = windowStart;
       document.body.style.cursor = "grabbing";
@@ -62,6 +70,7 @@ export function TimeWindowSlider({
 
     const handleMouseUp = () => {
       isDragging.current = false;
+      setIsDraggingState(false);
       document.body.style.cursor = "";
     };
 
@@ -85,6 +94,19 @@ export function TimeWindowSlider({
     [dataMinYear, totalDataYears, yearsToShow, clampStart, onWindowStartChange],
   );
 
+  /* ── Mouse wheel scroll → shift window ±1 year ── */
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0 || e.deltaX > 0) {
+        onWindowStartChange(clampStart(windowStart + 1));
+      } else {
+        onWindowStartChange(clampStart(windowStart - 1));
+      }
+    },
+    [windowStart, clampStart, onWindowStartChange],
+  );
+
   /* ── Tick marks ── */
   const tickYears: number[] = [];
   for (let y = dataMinYear; y <= dataMaxYear; y++) {
@@ -94,18 +116,11 @@ export function TimeWindowSlider({
   const rangeLabel =
     windowStart === windowEnd ? String(windowStart) : `${windowStart}\u2013${windowEnd}`;
 
-  const ringSummary = labels.ringSummaryTemplate.replace("{rings}", String(yearsToShow + 1));
-  const totalSummary = labels.totalYearsTemplate.replace("{years}", String(totalDataYears));
+  const windowTransition =
+    animationEnabled && !isDraggingState ? `left ${animationDuration}ms ease` : "none";
 
   return (
-    <div className="spiral-timeline__slider">
-      <div className="spiral-timeline__slider-header">
-        <span>{labels.timeWindowTitle}</span>
-        <span>
-          {windowStart} — {windowEnd}
-        </span>
-      </div>
-
+    <div className="spiral-timeline__slider" onWheel={handleWheel}>
       {/* biome-ignore lint/a11y/noStaticElementInteractions: track click is supplementary to the draggable slider */}
       <div
         className="spiral-timeline__slider-track"
@@ -127,7 +142,11 @@ export function TimeWindowSlider({
         {/* Draggable window indicator */}
         <div
           className="spiral-timeline__slider-window"
-          style={{ left: `${windowLeftPercent}%`, width: `${windowWidthPercent}%` }}
+          style={{
+            left: `${windowLeftPercent}%`,
+            width: `${windowWidthPercent}%`,
+            transition: windowTransition,
+          }}
           onMouseDown={handleWindowMouseDown}
           role="slider"
           aria-label={labels.timeWindowTitle}
@@ -139,11 +158,6 @@ export function TimeWindowSlider({
         >
           <div className="spiral-timeline__slider-window-label">{rangeLabel}</div>
         </div>
-      </div>
-
-      <div className="spiral-timeline__slider-info">
-        <span>{ringSummary}</span>
-        <span>{totalSummary}</span>
       </div>
     </div>
   );

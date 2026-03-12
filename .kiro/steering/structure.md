@@ -77,7 +77,7 @@ Utility modules (e.g., `geometry.ts`, `colors.ts`, `shapes.ts`) live alongside t
 
 ```typescript
 export { SpiralTimeline } from "./blocks/SpiralTimeline/SpiralTimeline.tsx";
-export type { DataNode, SpiralTimelineConfig, /* ... */ } from "./blocks/SpiralTimeline/types.ts";
+export type { DataNode, SpiralTimelineConfig, TimeWindowConfig, /* ... */ } from "./blocks/SpiralTimeline/types.ts";
 
 export { ImageZoom } from "./blocks/ImageZoom/ImageZoom.tsx";
 export type { ImageZoomConfig, ImageZoomProps, ZoomLevel } from "./blocks/ImageZoom/types.ts";

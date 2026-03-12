@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
+import { useState } from "react";
 import { SpiralTimeline } from "./SpiralTimeline.tsx";
 import type { DataNode, SpiralTimelineProps } from "./types.ts";
 
@@ -108,6 +109,9 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
     data: args.data as DataNode[],
     locale: args.locale as string | undefined,
     className: args.className as string | undefined,
+    onYearsToShowChange: args.onYearsToShowChange as ((yearsToShow: number) => void) | undefined,
+    onWindowStartChange: args.onWindowStartChange as ((windowStart: number) => void) | undefined,
+    windowStart: args.windowStart as number | undefined,
     config: {
       yearsToShow: args.yearsToShow as number,
       yearLabelPosition: args.yearLabelPosition as SpiralTimelineProps["config"] extends infer C
@@ -140,6 +144,11 @@ function argsToProps(args: Record<string, unknown>): SpiralTimelineProps {
           ? T
           : never
         : never,
+      timeWindow: {
+        visible: args["timeWindow.visible"] as boolean,
+        animationEnabled: args["timeWindow.animationEnabled"] as boolean,
+        animationDuration: args["timeWindow.animationDuration"] as number,
+      },
       onNodeClick: args.onNodeClick as ((node: DataNode, event: MouseEvent) => void) | undefined,
     },
   };
@@ -264,10 +273,36 @@ const meta: Meta = {
       table: { category: "Animations" },
     },
 
+    /* ── Config: timeWindow ── */
+    "timeWindow.visible": {
+      control: "boolean",
+      description: "Show/hide the time window slider.",
+      table: { category: "Time Window" },
+    },
+    "timeWindow.animationEnabled": {
+      control: "boolean",
+      description: "Enable animated transitions for slider movement.",
+      table: { category: "Time Window" },
+    },
+    "timeWindow.animationDuration": {
+      control: { type: "range", min: 0, max: 2000, step: 50 },
+      description: "Transition duration (ms) for slider-driven animations.",
+      table: { category: "Time Window" },
+    },
+
     /* ── Hidden from controls ── */
     types: { table: { disable: true } },
     onNodeClick: { table: { disable: true } },
+    onYearsToShowChange: { table: { disable: true } },
+    onWindowStartChange: { table: { disable: true } },
     config: { table: { disable: true } },
+
+    /* ── Controlled windowStart ── */
+    windowStart: {
+      control: { type: "number" },
+      description: "Controlled window start year. Set to jump the spiral to a specific year range.",
+      table: { category: "Config" },
+    },
   },
   args: {
     data: sampleData,
@@ -287,12 +322,27 @@ const meta: Meta = {
     "ringGradient.applyToLabels": true,
     "animations.enabled": true,
     "animations.duration": 400,
+    "timeWindow.visible": true,
+    "timeWindow.animationEnabled": true,
+    "timeWindow.animationDuration": 400,
     types: defaultTypes,
     onNodeClick: fn(),
   },
   render: (args) => {
     const props = argsToProps(args);
-    return <SpiralTimeline {...props} />;
+    const [ws, setWs] = useState<number | undefined>(props.windowStart);
+    // Sync when Storybook control changes
+    const effectiveWs = props.windowStart !== undefined ? props.windowStart : ws;
+    return (
+      <SpiralTimeline
+        {...props}
+        windowStart={effectiveWs}
+        onWindowStartChange={(v) => {
+          setWs(v);
+          (props.onWindowStartChange as ((w: number) => void) | undefined)?.(v);
+        }}
+      />
+    );
   },
 };
 

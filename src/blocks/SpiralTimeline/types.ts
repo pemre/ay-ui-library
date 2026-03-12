@@ -77,6 +77,17 @@ export interface AnimationConfig {
   duration: number;
 }
 
+// ── Time Window Configuration ──────────────────────────────
+
+export interface TimeWindowConfig {
+  /** Show/hide the time window slider (default: true). */
+  visible: boolean;
+  /** Enable animated transitions when slider position changes (default: true). */
+  animationEnabled: boolean;
+  /** Transition duration in ms for slider-driven animations (default: uses animations.duration). */
+  animationDuration: number;
+}
+
 // ── Year Label Position ────────────────────────────────────
 
 export type YearLabelPosition =
@@ -122,6 +133,8 @@ export interface SpiralTimelineConfig {
   ringGradient?: Partial<RingGradientConfig>;
   /** Transition animation configuration. */
   animations?: Partial<AnimationConfig>;
+  /** Time window slider configuration. */
+  timeWindow?: Partial<TimeWindowConfig>;
   /** Data-node type → visual mapping. */
   types?: TypeConfig[];
   /** Callback invoked when a data node is clicked. */
@@ -141,4 +154,10 @@ export interface SpiralTimelineProps {
   locale?: string;
   /** Additional CSS class name for the root container. */
   className?: string;
+  /** Callback invoked when yearsToShow changes (zoom controls, mouse wheel). Enables controlled mode. */
+  onYearsToShowChange?: (yearsToShow: number) => void;
+  /** Callback invoked when windowStart changes (scroll, slider drag, click). Enables controlled mode. */
+  onWindowStartChange?: (windowStart: number) => void;
+  /** Controlled window start year. When provided, the component uses this value instead of internal state. */
+  windowStart?: number;
 }

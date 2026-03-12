@@ -13,6 +13,7 @@ export type {
   SpiralTimelineConfig,
   SpiralTimelineLabels,
   SpiralTimelineProps,
+  TimeWindowConfig,
   TypeConfig,
   YearLabelPosition,
   ZoomConfig,
