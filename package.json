@@ -1,6 +1,6 @@
 {
     "name": "ay-ui-library",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "🌜 Ay UI Library — Reusable visualization and interactive components for React",
     "type": "module",
     "main": "dist/index.cjs.js",

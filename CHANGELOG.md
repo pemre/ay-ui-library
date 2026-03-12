@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] — 2026-03-12
+
+### Fixed
+
+- GitHub Actions workflow (`deploy-docs.yml`) updated from old Ladle build (`npm run build-docs` → `./docs`) to Storybook build (`npm run build-storybook` → `./storybook-static`). The live demo at https://pemre.github.io/ay-ui-library/ now deploys the current Storybook site.
+- Upgraded `actions/upload-pages-artifact` to v3 and `actions/deploy-pages` to v4.
+- Workflow now uses `npm ci` with npm cache for faster, reproducible installs.
+
+### Changed
+
+- README.md now features a prominent link to the live Storybook demo and documents the automatic GitHub Pages deployment.
+
 ## [0.4.0] — 2026-03-12
 
 ### Added

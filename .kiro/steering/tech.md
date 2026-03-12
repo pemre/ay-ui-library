@@ -96,3 +96,12 @@ Components consume **semantic tokens only**. Core tokens are never referenced di
 - `passWithNoTests: true`
 - Property tests use fast-check with minimum 100 iterations per property
 - Property test tag format: `// Feature: {feature-name}, Property {N}: {title}`
+
+## CI/CD
+
+- GitHub Actions workflow: `.github/workflows/deploy-docs.yml`
+- Triggers on push to `main`
+- Builds Storybook (`npm run build-storybook`) and deploys to GitHub Pages
+- Live URL: https://pemre.github.io/ay-ui-library/
+- Uses `actions/upload-pages-artifact@v3` and `actions/deploy-pages@v4`
+- Node.js 20 with npm cache for fast installs (`npm ci`)

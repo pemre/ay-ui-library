@@ -6,6 +6,8 @@ Reusable visualization and interactive components for React.
 [![npm](https://img.shields.io/npm/v/ay-ui-library)](https://www.npmjs.com/package/ay-ui-library)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+📖 **[Live Storybook Demo](https://pemre.github.io/ay-ui-library/)** — Interactive examples, API docs, and theme playground.
+
 ---
 
 ## Philosophy & Design Principles
@@ -128,6 +130,8 @@ function App() {
 }
 ```
 
+See the [ImageZoom stories](https://pemre.github.io/ay-ui-library/?path=/docs/blocks-imagezoom--docs) in the live Storybook for interactive examples.
+
 ---
 
 ## Theming & Design Tokens
@@ -218,6 +222,10 @@ npm run dev          # Start Storybook on http://localhost:6006
 | `npm run format` | Format source with Biome |
 | `npm run storybook` | Start Storybook dev server |
 | `npm run build-storybook` | Build static Storybook site |
+
+### Storybook deployment
+
+Storybook is automatically built and deployed to [GitHub Pages](https://pemre.github.io/ay-ui-library/) on every push to `main` via the `deploy-docs.yml` GitHub Actions workflow.
 
 ### Quality gates (must all pass before merge)
 

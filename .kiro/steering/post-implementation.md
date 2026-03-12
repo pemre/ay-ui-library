@@ -1,8 +1,8 @@
----
-inclusion: auto
----
-
 # Post-Implementation Checklist
+
+Step-by-step guide for maintaining project documentation and versioning after implementing a feature or fixing a bug.
+
+# Checklist
 
 After completing any feature or bugfix spec:
 

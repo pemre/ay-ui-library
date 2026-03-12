@@ -43,6 +43,9 @@ ay-ui-library/
 │   └── preview-head.html                     # Injects token CSS into Storybook iframe
 ├── .kiro/
 │   └── steering/                             # Kiro steering documents (this directory)
+├── .github/
+│   └── workflows/
+│       └── deploy-docs.yml                   # GitHub Actions: build Storybook → deploy to GitHub Pages
 ├── dist/                                     # Build output (git-ignored)
 │   ├── index.es.js
 │   ├── index.cjs.js
